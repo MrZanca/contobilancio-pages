@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Collegamento banca – ContoBilancio</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<h1>Collegamento banca</h1>
+<p id="msg">Lettura del risultato…</p>
+<p><code id="code"></code></p>
+<p><button id="copy" hidden>Copia codice</button> <a id="open" hidden class="btn">Apri ContoBilancio</a></p>
+<p class="small">Questa pagina non invia né salva nulla: il codice resta solo nel tuo browser.</p>
+</main>
+<script>
+  const q = new URLSearchParams(location.search);
+  const code = q.get('code'), err = q.get('error');
+  const msg = document.getElementById('msg');
+  if (code) {
+    msg.textContent = 'Consenso completato. Copia il codice e incollalo dove richiesto, oppure apri l\'app.';
+    document.getElementById('code').textContent = code;
+    const c = document.getElementById('copy'); c.hidden = false;
+    c.onclick = () => navigator.clipboard.writeText(code).then(() => c.textContent = 'Copiato');
+    const o = document.getElementById('open'); o.hidden = false;
+    o.href = 'contobilancio://callback' + location.search;
+  } else if (err) {
+    msg.textContent = 'La banca ha restituito un errore: ' + err + ' ' + (q.get('error_description') || '');
+  } else {
+    msg.textContent = 'Nessun codice ricevuto.';
+  }
+</script>
+</body></html>
